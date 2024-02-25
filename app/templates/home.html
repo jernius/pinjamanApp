@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Peminjaman</title>
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='detailPinjaman.js') }}" defer></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <!-- akses font unutk judul aplikasi -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
+
+
+    <!-- font awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+
+
+
+</head>
+
+
+<div id="abcd"></div>
+
+<body class="mx-auto">
+
+    <!-- Modal Bootstrap untuk loading -->
+    <div class="modal" tabindex="-1" role="dialog" id="loadingModal">
+        <div class="modal-dialog d-flex justify-content-center modal-dialog-centered modal-dialog-scrollable"
+            role="document">
+
+            <div class="">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Script Bootstrap dan JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+
+
+
+
+
+
+    <!-- bagian sidebar -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasWithBackdrop"
+        aria-labelledby="offcanvasWithBackdropLabel">
+        <div class="offcanvas-header">
+            <button type="button" class="btn-close text-reset me-3" data-bs-dismiss="offcanvas" aria-label="Close">
+            </button>
+        </div>
+        <div class="offcanvas-body">
+            <svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" fill="green"
+                class="bi bi-person-circle mx-auto" viewBox="0 0 16 16">
+                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                <path fill-rule="evenodd"
+                    d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+            </svg>
+            <h6 class="offcanvas-title mx-auto" id="namauser">{{ user_id }}</h6>
+
+            <div style="display: flex; justify-content: space-around; align-items: center; margin-top: 30px;">
+                <h5 style="margin: 0;">Code Transaksi: </h5>
+                <div style="display: flex; align-content: center; justify-content: space-between;">
+                    <div class="offcanvas-title mx-auto" id="namauser"
+                    style="border: 2px solid; border-radius: 10px;padding: 10px 10px 10px 10px;"><input style="border: none; width: fit-content;" type="text" id="codeuserhidden" value="{{user_code}}" readonly></div>
+                        
+                    <button id="buttomcopicode" style="padding: 5px; margin: 5px; border-radius: 8px" type="button"
+                        class="btn btn-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                            class="bi bi-copy" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z" />
+                        </svg>
+                    </button>
+
+
+                </div>
+
+            </div>
+            <!-- isi dari sidebar -->
+            <div style="height: 100vh;">
+                <!-- <ul class="menu_sidebar">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                </ul> -->
+            </div>
+            <br><br><br>
+            <div style="bottom: 0;" id="menulogout" class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a id="logoutuser" class="btn btn-outline-dark" href="#" role="button">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <div style=" height: 100vh; position: relative; width: 100%;">
+
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-right: 30px;">
+            <div style="display: flex; align-items: center; justify-content: center;margin: 20px 0px 10px 20px;">
+                <button style="border: 2px solid; border-radius: 50%; padding: 0;" class="btn " type="button"
+                    data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBackdrop"
+                    aria-controls="offcanvasWithBackdrop">
+                    <svg style="padding: 5px;" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="green"
+                        class="bi bi-person-circle" viewBox="0 0 16 16">
+                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                        <path fill-rule="evenodd"
+                            d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                    </svg>
+                </button>
+                <h3 class="offcanvas-title" id="namauser">{{ user_id }}</h3>
+
+            </div>
+
+            <button id="buttonTotalAccWait" type="button" class="btn position-relative">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                    class="bi bi-chat-left-dots" viewBox="0 0 16 16">
+                    <path
+                        d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                    <path
+                        d="M5 6a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+                </svg>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
+
+                    <span class="visually-hidden">unread messages</span>
+                </span>
+            </button>
+
+
+        </div>
+
+
+        <!-- bagian pinjaman pengguna -->
+        <div id="conten1" class="conten"
+            style="background-color: rgb(255, 255, 255); width: 100%; border-radius:20px 20px 0 0; ">
+            <br>
+            <div id="users_table_pinjaman" class="container">
+                <h1 style="text-align: center; margin:  20px 0 20px 0;" class="form-label">My Loans</h1>
+                <div style="width: 150px; margin-left: auto; margin-bottom: 30px;">
+                    <select id="selectMenu" class="form-select align-self-end">
+                        <option value="unpaid" selected>Unpaid</option>
+                        <option value="pending">Pending</option>
+                        <option value="paid">Paid</option>
+                    </select>
+                </div>
+
+
+
+                <div class="users_table unpaid" id="users_table_unpaid">
+                    <div id="TampilanKosong1">
+                        <div style="display: flex;justify-content: center; margin-top: 150px; opacity: 50%;">
+                            <h1>No data found.</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="users_table pending" id="users_table_pending">
+                    <table class="table">
+                        <thead>
+
+                            <tr>
+                                <th scope="col">Nama</th>
+                                <th scope="col">Nominal</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="users_table paid" id="users_table_paid">
+                    <table class="table">
+                        <thead>
+
+                            <tr>
+                                <th scope="col">Nama</th>
+                                <th scope="col">Nominal</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Pembayaran</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card-body d-flex flex-column">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Name</label>
+                                    <input type="hidden" class="form-control" id="id_dibayar" readonly>
+                                    <input type="name" class="form-control" id="name_dibayar" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Nominal</label>
+                                    <input type="email" class="form-control" id="nominal_dibayar" readonly>
+
+                                </div>
+                                <div class="mb-3">
+                                    <label for="formFileMultiple" class="form-label">Input Bukti Pembayaran</label>
+                                    <input class="form-control" type="file" id="proofPaymentFile" multiple>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button id="button_bayar" type="button" class="btn btn-primary"
+                                data-bs-dismiss="modal">Bayar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="conten2" class="conten" style="background-color: rgb(255, 255, 255);border-radius:20px 20px 0 0;">
+            <h1 style="text-align: center; margin:  20px 0 40px 0;" class="form-label">Waiting for confirmation</h1>
+            <div class="container" id="datadipinjamstatuswait">
+
+
+
+
+            </div>
+
+
+
+        </div>
+
+        <div id="conten3" class="conten" style="background-color: rgb(255, 255, 255);border-radius:20px 20px 0 0;">
+
+            <div class="position-relative top-0 start-50 translate-middle-x p-3" style="z-index: 11">
+                <!-- Toast element -->
+                <div style="background-color: green; border-radius: 20px; opacity: 50%;" id="liveToast"
+                    class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-body">
+                        <p style="color: aliceblue;">Data berhasil dikirim</p>
+                    </div>
+                </div>
+
+                <div style="background-color: red; border-radius: 20px; opacity: 50%;" id="liveToastInvalid"
+                    class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-body">
+                        <p style="color: aliceblue;">Maaf, gagal mengajukan pinjaman. Terjadi kesalahan saat memproses
+                            data.</p>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- button profile di menu -->
+            <div class="card-body d-flex flex-column">
+                <h1 style="text-align: center; margin:  20px 0 20px 0;" class="form-label">Apply for Loan</h1>
+                <div class="mb-2">
+
+                    <span id="idusernya" style="display: none;">{{ user_idnya }}</span>
+                    <label for="name" class="form-label">Nominal pinjaman</label>
+                    <input type="number" class="form-control form-control" id="nominalpinjaman" placeholder="Jumlahh">
+                </div>
+                <div class="mb-2">
+                    <label for="name" class="form-label">Tanggal Pengembalian</label>
+                    <input type="date" class="form-control form-control" id="tanggalpengembalian"
+                        placeholder="Tanggal pengembalian">
+                </div>
+                <div class="mb-3"
+                    style="display: flex; align-content: center; justify-content: space-between; margin: 10px 0 10px 0;">
+                    <label style="margin: 0; padding: 6px 12px;" for="name" class="form-label">Kode Pinjaman</label>
+                    <input style="width: 50%;" type="text" class="form-control form-control" id="codepinjaman"
+                        placeholder="Code">
+                </div>
+                <button type="button" class="btn btn-primary btn_submit" id="submitButton">Submit</button>
+
+            </div>
+        </div>
+
+
+
+
+        <div id="conten4" class="conten" style="background-color: rgb(255, 255, 255); border-radius:20px 20px 0 0;">
+
+            <h1 style="text-align: center; margin:  20px 0 40px 0;" class="form-label">Borrowing Now</h1>
+            <div class="container" id="datapeminjam">
+
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <input type="hidden" class="form-control" id="id_pinjaman" readonly>
+                            <h4 class="modal-title" id="staticBackdropLabel">Confirmation!</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <h5>Are you sure you want to proceed?</h5>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button id="button_accc" type="button" class="btn btn-primary"
+                                data-bs-dismiss="modal">Yaps</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- <div class="modal fade" id="konfirmasi_kembali" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <input type="hidden" class="form-control" id="id_pinjaman" readonly>
+                            <h4 class="modal-title" id="staticBackdropLabel">Confirmation!</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <h5>Are you sure you want to proceed?</h5>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button id="button_acc" type="button" class="btn btn-primary"
+                                data-bs-dismiss="modal">Yaps</button>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+
+
+    <div class="footer">
+        <div style="width: 100%; margin: 10px 0 30px 0;" class="contentmenu" role="group"
+            aria-label="Basic radio toggle button group">
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" value="1" checked>
+            <label class="btn btn-outline-dark" for="btnradio1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-house"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z" />
+                </svg>
+
+            </label>
+
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" value="2">
+            <label id="buttondetailwait" class="btn btn-outline-dark position-relative" for="btnradio2">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-list-ul"
+                    viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+                </svg>
+
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+
+                </span>
+
+
+            </label>
+
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" value="3">
+            <label class="btn btn-outline-dark" for="btnradio3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                    class="bi bi-arrow-left-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5m14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5" />
+                </svg>
+            </label>
+
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off" value="4">
+            <label class="btn btn-outline-dark" for="btnradio4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                    class="bi bi-clipboard-data" viewBox="0 0 16 16">
+                    <path
+                        d="M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0z" />
+                    <path
+                        d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z" />
+                    <path
+                        d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z" />
+                </svg>
+            </label>
+        </div>
+    </div>
+    </div>
+
+
+
+
+
+
+
+
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
+
+
+<script>
+
+
+    // mengecek jika file atau tampilan htmlnya sudah jadi
+    $(document).ready(function () {
+
+        // fungsi mengngambil dan menginput data pinjaman
+        submitButton()
+
+
+
+        // fungsi menampilkan dan meng-hidden tabel data pinjaman dan peminjam menggunakan button switch
+        // toggleTableVisibility();
+
+        handleSelectChange()
+
+        // fungsi mengambil data siapa saja menjadi peminjam kepada username yang sedang login dan menanpikannya
+        getUsersAndDisplayPeminjam()
+
+        // fungsi untuk mengambil dan mentotal semua tagihan berdasarkan namayang dipinjam dan menampilkannya
+        getUsersAndDisplayInTableAllPinjaman()
+
+        getUsersAndDisplayInTableAllPinjamanPending()
+
+        getUsersAndDisplayInTableAllPinjamanPaid()
+
+        // menuButtonTop()
+        // showConten()
+        getJumlahPeminjamStatusWait()
+        getTotalPinjamanAccStatusWait()
+
+        // fungsi logout
+        logout()
+
+        //fungsi unutk ke accpinjaman status wait
+        buttonAccWait()
+
+        getDataStatusWait()
+
+
+        function buttonAccWait() {
+            $("#buttonTotalAccWait").click(function () {
+                // Redirect to register.html
+                $('#loadingModal').modal('show')
+                setTimeout(function () {
+                    // Menutup modal loading setelah data selesai diambil
+                    $('#loadingModal').modal('hide');
+                    console.log('Data has been loaded!');
+                    window.location.href = "{{ url_for('AccStatusWait') }}";
+                }, 300);
+            });
+
+        }
+
+
+
+        // ----------------------------------Bagian button yang ada di bottom--------------------------------------------------------------------------
+
+
+        // toast untuk button summit pinjaman
+        menubuttombottom()
+
+
+        function menubuttombottom() {
+            $("#conten2").hide();
+            $("#conten3").hide();
+            $("#conten4").hide();
+            $(document).ready(function () {
+                $('.btn-check').change(function () {
+                    // Mengakses nilai tombol radio yang dipilih
+                    var selectedValue = $("input[name='btnradio']:checked").val();
+
+
+                    // Menampilkan div berdasarkan nilai tombol radio
+                    $('.conten').hide();
+                    $('#conten' + selectedValue).show();
+                });
+            });
+        }
+
+
+        // fungsi mengambil jumlah data wait untuk badge menu
+
+        function appendRowsBadgeAccPinjaman(jumlah) {
+            var julahData = $('#buttonTotalAccWait .badge');
+            julahData.empty();
+            var row = `<span>${jumlah}</span>`;
+            julahData.append(row);
+        }
+
+        function getTotalPinjamanAccStatusWait() {
+            $.ajax({
+                url: "{{ url_for('getTotalPinjamanAccStatusWait') }}",
+                type: "GET",
+                dataType: "json",
+                success: function (result) {
+                    var data = result.data
+                    console.log(data[0])
+                    appendRowsBadgeAccPinjaman(data[0]);
+                },
+                error: function (error) {
+                    console.error('Error fetching data:', error);
+
+                }
+            });
+        }
+        // akhir dari fungsi mengambil jumlah data wait untuk badge menu
+
+
+        // fungsi mengambil jumlah data wait untuk badge menu
+
+        function appendRowsBadgeWait(jumlah) {
+            var julahData = $('#buttondetailwait .badge');
+            julahData.empty();
+            var row = `<span>${jumlah}</span>`;
+            julahData.append(row);
+        }
+
+        function getJumlahPeminjamStatusWait() {
+            $.ajax({
+                url: "{{ url_for('getTotalPinjamanSatatusWait') }}",
+                type: "GET",
+                dataType: "json",
+                success: function (result) {
+                    var data = result.data
+                    console.log(data[0])
+                    appendRowsBadgeWait(data[0]);
+                },
+                error: function (error) {
+                    console.error('Error fetching data:', error);
+
+                }
+            });
+        }
+        // akhir dari fungsi mengambil jumlah data wait untuk badge menu
+
+
+
+        copyandshowtooltip(); // Panggil fungsi terlebih dahulu
+
+        $('#buttomcopicode').tooltip();
+
+        function copyandshowtooltip() {
+            $("#buttomcopicode").on("click", function () {
+                var textToCopy = $("#codeuserhidden")
+                console.log(textToCopy.html())
+                textToCopy.select();
+                document.execCommand("copy");
+            });
+        }
+
+
+
+
+        // ------------------------------bagian menginput pinjaman-----------------------------------------------------------------------------------
+
+
+
+
+        function submitButton() {
+            $("#submitButton").click(function () {
+                var nominal = $("#nominalpinjaman").val();
+                var code = $("#codepinjaman").val();
+                var tanggalpengembalian = $("#tanggalpengembalian").val();
+                var peminjam = $("#idusernya").text();
+                console.log(nominal)
+
+                console.log(peminjam)
+
+
+                $('#loadingModal').modal('show')
+
+                inputData(peminjam, code, nominal, tanggalpengembalian)
+
+            });
+
+        }
+
+
+
+
+        function inputData(peminjam, code, nominal, tanggalpengembalian) {
+
+            $.ajax({
+                url: "{{ url_for('createPinjam') }}",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    peminjam: peminjam,
+                    code: code,
+                    nominal: nominal,
+                    tanggalpengembalian: tanggalpengembalian
+
+                },
+                success: function (response) {
+                    console.log("Data Update successfully:", response);
+                    setTimeout(function () {
+                        // Menutup modal loading setelah data selesai diambil
+                        $('#loadingModal').modal('hide');
+                        $('#liveToast').removeClass('hide').toast('show');
+                    }, 500);
+                    getUsersAndDisplayInTableAllPinjaman()
+                    getJumlahPeminjamStatusWait()
+                    getDataStatusWait()
+
+                },
+                error: function (error) {
+                    console.log('erorr', error.message)
+                    $('#loadingModal').modal('hide')
+                    $('#liveToastInvalid').removeClass('hide').toast('show');
+                }
+            })
+        }
+
+        // --------------------------------bagian isi (tabel)-------------------------------------------------------------------------------------------------
+
+
+        function handleSelectChange() {
+            var selectedValue = $("#selectMenu").val();
+            // Semua tabel disembunyikan terlebih dahulu
+            $(".users_table").hide();
+            // Tampilkan tabel dengan class yang sesuai dengan nilai terpilih
+            $("." + selectedValue).show();
+        }
+
+        // Tambahkan event listener untuk mendeteksi perubahan pada select
+        $("#selectMenu").on("change", handleSelectChange);
+
+        function fungsiModal() {
+
+        }
+
+
+
+        // fungsi untuk menyimpan data yang sudah disimpan pada button ke variabel berdasarkan nama class atau pun id
+        function introduce() {
+            $('.delete-button').on('click', function () {
+                console.log("delete-button")
+                var userId = $(this).data('user-id');
+                console.log(userId)
+                deleteUser(userId);
+            });
+            $('.detail-button').on('click', function () {
+
+                var iduserdipinjam = $(this).data('user-dipinjam');
+                console.log("ini idnya", iduserdipinjam)
+                getDetailByButtonDetail(iduserdipinjam);
+                $('#loadingModal').modal('show')
+                setTimeout(function () {
+                    // Menutup modal loading setelah data selesai diambil
+                    $('#loadingModal').modal('hide');
+                    console.log('Data has been loaded!');
+                }, 800);
+            });
+            $('.paid-button').on('click', function () {
+                var userName = $(this).data('username-dipinjam');
+                var userId = $(this).data('user-dipinjam');
+                console.log(userName)
+                var usernominal = $(this).data('user-nominal');
+                console.log(usernominal)
+                var id = $("#id_dibayar")
+                var name = $("#name_dibayar")
+                var nominal = $("#nominal_dibayar")
+
+
+                id.val(userId)
+                name.val(userName)
+                nominal.val(usernominal)
+            });
+            $("#button_bayar").click(function () {
+                var id_dibayar = $("#id_dibayar").val();
+                var proofPaymentFile = $("#proofPaymentFile")[0].files[0];
+                var formData = new FormData();
+                formData.append('id_dibayar', id_dibayar);
+                formData.append('file', proofPaymentFile);
+                console.log("FormData:", formData);
+                $('#loadingModal').modal('show')
+                buttonBayar(formData)
+
+            });
+            $(".acc-button").click(function () {
+                var userId = $(this).data('user-id');
+                var id_pinjaman = $("#id_pinjaman")
+                id_pinjaman.val(userId)
+
+
+
+            });
+            $(".bukti-button").click(function () {
+                var userId = $(this).data('user-id');
+                getIdAndGetBukti(userId);
+                $('#loadingModal').modal('show')
+                setTimeout(function () {
+                    // Menutup modal loading setelah data selesai diambil
+                    $('#loadingModal').modal('hide');
+                    console.log('Data has been loaded!');
+                }, 800);
+            });
+
+
+            $("#button_accc").click(function () {
+                var id_pinjaman = $("#id_pinjaman").val();
+                console.log("ini buttom acc", id_pinjaman)
+                getIdAndAcc(id_pinjaman)
+                $('#loadingModal').modal('show')
+
+
+
+            });
+
+            $('.acc01-button').on('click', function () {
+                var userId = $(this).data('user-id');
+                console.log("pas belum", userId)
+                acc01ByID(userId)
+
+            });
+
+            $('.reject01-button').on('click', function () {
+                var userId = $(this).data('user-id');
+                console.log("pas belum", userId)
+                reject01ByID(userId)
+
+            });
+        }
+
+        function acc01ByID(userId) {
+            $.ajax({
+                url: "{{ url_for('acc01ByID') }}",
+                type: 'POST',
+                data: {
+                    userId: userId
+                },
+
+                success: function (response) {
+
+                    console.log('Upload successful:', response);
+                    console.log('Data has been loaded!');
+                    getDataStatusWait()
+                    getJumlahPeminjamStatusWait()
+                    getUsersAndDisplayInTableAllPinjaman()
+
+
+                },
+                error: function (error) {
+                    console.error('Error uploading file:', error);
+                }
+            });
+        }
+
+        function reject01ByID(userId) {
+            $.ajax({
+                url: "{{ url_for('reject01ByID') }}",
+                type: 'POST',
+                data: {
+                    userId: userId
+                },
+
+                success: function (response) {
+
+                    console.log('Upload successful:', response);
+                    console.log('Data has been loaded!');
+                    getDataStatusWait()
+                    getJumlahPeminjamStatusWait()
+
+                },
+                error: function (error) {
+                    console.error('Error uploading file:', error);
+                }
+            });
+        }
+
+        function getIdAndGetBukti(userId) {
+            $.ajax({
+                url: "{{ url_for('Bukti') }}",
+                type: 'POST',
+                data: {
+                    userId: userId
+                },
+
+                success: function (response) {
+                    console.log("successfully:", response);
+                    window.location.href = response.redirect_url;
+
+                },
+                error: function (error) {
+                    console.error('Error uploading file:', error);
+                }
+            });
+        }
+
+        function getIdAndAcc(id_pinjaman) {
+            $.ajax({
+                url: "{{ url_for('Acc') }}",
+                type: 'POST',
+                data: {
+                    id_pinjaman: id_pinjaman
+                },
+
+                success: function (response) {
+
+                    console.log('Upload successful:', response);
+
+                    setTimeout(function () {
+                        // Menutup modal loading setelah data selesai diambil
+                        $('#loadingModal').modal('hide');
+                        console.log('Data has been loaded!');
+                        getUsersAndDisplayPeminjam();
+                        getUsersAndDisplayInTableAllPinjaman()
+                    }, 500);
+                },
+                error: function (error) {
+                    console.error('Error uploading file:', error);
+                }
+            });
+        }
+
+        // fungsi untuk membayar atau mengirim bukti bayar
+        function buttonBayar(formData) {
+            $.ajax({
+                url: "{{ url_for('createPayment') }}",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    console.log('Upload successful:', response);
+                    // Menutup modal loading setelah data selesai diambil
+                    setTimeout(function () {
+                        // Menutup modal loading setelah data selesai diambil
+                        $('#loadingModal').modal('hide');
+                    }, 500);
+                    getUsersAndDisplayInTableAllPinjaman()
+                },
+                error: function (error) {
+                    console.error('Error uploading file:', error);
+                    $('#loadingModal').modal('hide');
+                }
+            });
+        }
+
+        function getDetailByButtonDetail(iduserdipinjam) {
+            $.ajax({
+                url: "{{ url_for('detail') }}",  // Ganti dengan endpoint yang sesuai
+                type: "POST",
+                data: {
+                    iduserdipinjam: iduserdipinjam
+                },
+                success: function (response) {
+                    console.log("successfully:", response);
+                    window.location.href = response.redirect_url;
+                },
+                error: function (error) {
+                    console.log(error.message);
+                }
+            });
+        }
+
+
+
+
+        function getUsersAndDisplayPeminjam() {
+            $.ajax({
+                url: "{{ url_for('getUsers') }}",
+                type: "GET",
+                dataType: "json",
+                success: function (result) {
+                    var data = result.data
+                    function appendRows() {
+                        var tbody = $('#conten4 #datapeminjam');
+                        tbody.empty(); // Clear existing rows
+
+                        // Loop through the data and append rows to the table
+                        for (var i = 0; i < data.length; i++) {
+
+                            var row =
+
+                                `<div class="card">
+                                        <div class="card-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+                                            ${data[i][2]}
+                                            <button id="acc" type="button" data-user-id="${data[i][0]}" class="btn btn-success acc-button" data-bs-toggle="modal" data-bs-target="#exampleModal">accept</button>
+                                            </div>
+                                            <button id=" bukti" type="button" data-user-id="${data[i][0]}" class="btn btn-light bukti-button">
+                                                <div class="card-body"
+                                                style="display: flex; flex-direction: row; justify-content: space-between;">
+                                                <div style="display: flex; flex-direction: column; text-align: left;">
+                                                    <p class="card-text">${data[i][3]}</p>
+                                                    ${data[i][4]}
+                                                    </div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+                                                        </svg>
+                                                        </div>
+                                                        </button>
+                                                        </div>
+                                                       `;
+
+                            tbody.append(row);
+                        }
+
+
+                    }
+                    appendRows();
+                    introduce();
+                }
+            }
+
+            )
+        }
+
+
+        function getDataStatusWait() {
+            $.ajax({
+                url: "{{ url_for('getDataStatusWait') }}",
+                type: "GET",
+                dataType: "json",
+                success: function (result) {
+                    var data = result.data
+                    function appendRows() {
+                        var tbody = $('#datadipinjamstatuswait');
+                        tbody.empty(); // Clear existing rows
+
+                        // Loop through the data and append rows to the table
+                        for (var i = 0; i < data.length; i++) {
+                            var dataacc = data[i][5]
+                            console.log("ini data aja", dataacc)
+
+                            if (dataacc == 1) {
+                                var row = `
+                                            <div class="card" style="margin-bottom: 40px;>
+                                                <div class="card-body">
+                                                    <div class="containerrr">
+
+                                                        <div class="step completed">
+                                                            <div class="v-stepper">
+                                                                <div class="circle"></div>
+                                                                <div class="line"></div>
+                                                            </div>
+
+                                                            <div class="content">
+                                                                Anda telah berhasil melakukan peminjaman kepada ${data[i][1]} sebesar ${data[i][3]}..
+
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="step completed">
+                                                            <div class="v-stepper">
+                                                                <div class="circle"></div>
+                                                                <div class="line"></div>
+                                                            </div>
+
+                                                            <div class="content">
+                                                                Saati ini, Anda sedang menunggu persetujuan dari pemberi dana.
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="step completed">
+                                                            <div class="v-stepper">
+                                                                <div class="circle"></div>
+                                                                <div class="line"></div>
+                                                            </div>
+
+                                                            <div class="content">
+                                                                Selamat, peminjaman Anda telah disetujui.
+                                                            </div>
+                                                            <button id="acc01" type="button" data-user-id="${data[i][0]}"
+                                                                class="btn btn-primary acc01-button">accept</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>`;
+                                tbody.append(row);
+                            }
+                            else if (dataacc == 2) {
+                                var row = `
+                                            <div class="card" style="margin-bottom: 50px;>
+                                                <div class="card-body">
+                                                    <div class="containerrr">
+
+                                                        <div class="step completed">
+                                                            <div class="v-stepper">
+                                                                <div class="circle"></div>
+                                                                <div class="line"></div>
+                                                            </div>
+
+                                                            <div class="content">
+                                                                Anda telah berhasil melakukan peminjaman kepada ${data[i][1]} sebesar ${data[i][3]}..
+
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="step completed">
+                                                            <div class="v-stepper">
+                                                                <div class="circle"></div>
+                                                                <div class="line"></div>
+                                                            </div>
+
+                                                            <div class="content">
+                                                                Saati ini, Anda sedang menunggu persetujuan dari pemberi dana.
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="step cancel">
+                                                            <div class="v-stepper">
+                                                                <div class="circle"></div>
+                                                                <div class="line"></div>
+                                                            </div>
+
+                                                            <div class="content">
+                                                                Peminjaman Anda telah dibatalkan.
+                                                            </div>
+                                                            <button id="reject" type="button" data-user-id="${data[i][0]}"
+                                                                class="btn btn-danger reject01-button">Batalkan</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>`;
+                                tbody.append(row);
+                            }
+                            else {
+                                var row = `
+                                        <div class="card" style="margin-bottom: 20px;">
+                                            <div class="card-body">
+                                                <div class="containerrr">
+
+                                                    <div class="step completed">
+                                                        <div class="v-stepper">
+                                                            <div class="circle"></div>
+                                                            <div class="line"></div>
+                                                        </div>
+
+                                                        <div class="content">
+                                                            Anda telah berhasil melakukan peminjaman kepada ${data[i][1]} sebesar ${data[i][3]}..
+
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="step completed">
+                                                        <div class="v-stepper">
+                                                            <div class="circle"></div>
+                                                            <div class="line"></div>
+                                                        </div>
+
+                                                        <div class="content">
+                                                            Saati ini, Anda sedang menunggu persetujuan dari pemberi dana.
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="step active">
+                                                        <div class="v-stepper">
+                                                            <div class="circle"></div>
+                                                            <div class="line"></div>
+                                                        </div>
+
+                                                        <div class="content">
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>`;
+                                tbody.append(row);
+                            }
+
+
+
+
+
+
+                        }
+
+
+                    }
+                    appendRows();
+                    introduce();
+                }
+            }
+
+            )
+        }
+
+
+
+
+
+
+
+
+
+        function getUsersAndDisplayInTableAllPinjaman() {
+            $.ajax({
+                url: "{{ url_for('getUserspinjamall') }}",
+                type: "GET",
+                dataType: "json",
+                success: function (result) {
+                    var data = result.data
+                    console.log("hallo", data.length)
+                    console.log("hallo", data)
+
+                    // if (data.length == 0) {
+                    //     $('#TampilanKosong1').show();
+                    // }
+                    // else {
+                    function appendRows() {
+                        var tbody = $('#users_table_pinjaman #users_table_unpaid');
+                        if (data.length != 0) {
+
+                            tbody.empty(); // Clear existing rows
+                        }
+
+                        // Loop through the data and append rows to the table
+                        for (var i = 0; i < data.length; i++) {
+                            var row =
+                                `<div class="card" style="margin-bottom: 20px;">
+                                        <div class="card-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+                                            ${data[i][1]}
+                                            <p class="badge bg-secondary">${data[i][4]}</p>
+                                            <button id="Paid" type="button" data-username-dipinjam="${data[i][1]}" data-user-dipinjam="${data[i][2]}" data-user-nominal="${data[i][3]}" class="btn btn-success paid-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Paid</button>
+                                            
+                                            </div>
+                                            <button id="detail" type="button" data-user-dipinjam="${data[i][2]}" class="btn btn-light detail-button">
+                                                <div class="card-body"
+                                                style="display: flex; flex-direction: row; justify-content: space-between;">
+                                                <div style="display: flex; flex-direction: column; text-align: left;">
+                                                <p class="card-text">${data[i][3]}</p>
+                                                </div>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                                    <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+                                                </svg>
+                                                </div>
+                                        </button>
+                                    </div>`;
+                            tbody.append(row);
+                        }
+                    }
+                    appendRows();
+                    introduce();
+                }
+                // }
+            })
+        }
+        function getUsersAndDisplayInTableAllPinjamanPending() {
+            $.ajax({
+                url: "{{ url_for('getUserspinjamallPending') }}",
+                type: "GET",
+                dataType: "json",
+                success: function (result) {
+                    var data = result.data
+                    console.log("hallo")
+                    function appendRows() {
+                        var tbody = $('#users_table_pinjaman #users_table_pending .table tbody');
+                        tbody.empty(); // Clear existing rows
+
+                        // Loop through the data and append rows to the table
+                        for (var i = 0; i < data.length; i++) {
+                            var row = '<tr>' +
+                                '<th scope="row">' + data[i][1] + '</th>' +
+                                // '<td>' + data[i][2] + '</td>' +
+                                '<td>' + data[i][3] + '</td>' +
+                                // '<td>' + data[i][3] + '</td>' +
+                                '<td> <div class="badge bg-warning">' + data[i][4] + '</div></td>' +
+                                '</tr>';
+
+                            tbody.append(row);
+                        }
+                    }
+                    appendRows();
+
+                }
+            })
+        }
+
+        function getUsersAndDisplayInTableAllPinjamanPaid() {
+            $.ajax({
+                url: "{{ url_for('getUserspinjamallPaid') }}",
+                type: "GET",
+                dataType: "json",
+                success: function (result) {
+                    var data = result.data
+                    console.log("hallo")
+                    function appendRows() {
+                        var tbody = $('#users_table_pinjaman #users_table_paid .table tbody');
+                        tbody.empty(); // Clear existing rows
+
+                        // Loop through the data and append rows to the table
+                        for (var i = 0; i < data.length; i++) {
+                            var row = '<tr>' +
+                                '<th scope="row">' + data[i][1] + '</th>' +
+                                // '<td>' + data[i][2] + '</td>' +
+                                '<td>' + data[i][3] + '</td>' +
+                                // '<td>' + data[i][3] + '</td>' +
+                                '<td> <div class="badge bg-success">' + data[i][4] + '</div></td>' +
+                                '</tr>';
+
+                            tbody.append(row);
+                        }
+                    }
+                    appendRows();
+
+                }
+            })
+        }
+
+
+
+
+
+
+
+
+        function uploadByDipinjam() {
+            $("#submitpayDebtFormButton").click(function () {
+                var proofPaymentFile = $("#proofPaymentFile")[0].files[0];
+                var formData = new FormData();
+                formData.append('file', proofPaymentFile);
+
+                $.ajax({
+                    url: "{{ url_for('createPayment') }}",
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        console.log('Upload successful:', response);
+                    },
+                    error: function (error) {
+                        console.error('Error uploading file:', error);
+                    }
+                });
+            });
+        }
+
+
+
+
+        // ---------------------------logout------------------------------------------------------------------
+
+        function logout() {
+            $("#logoutuser").click(function () {
+                window.location.href = "{{ url_for('logout') }}";
+            });
+        }
+
+
+    });
+
+
+
+</script>
+
+</body>
+
+</html>

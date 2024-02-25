@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+  <title>Register</title>
+</head>
+
+<body style="background-color: rgba(0, 0, 0, 0.598);">
+  <!-- Modal Bootstrap untuk loading -->
+  <div class="modal" tabindex="-1" role="dialog" id="loadingModal">
+    <div class="modal-dialog d-flex justify-content-center modal-dialog-centered modal-dialog-scrollable"
+      role="document">
+
+      <div class="">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!-- Optional JavaScript; choose one of the two! -->
+
+  <!-- Option 1: Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+    crossorigin="anonymous"></script>
+
+
+  <div style="margin-top: 50px;">
+    <div class="card mx-auto" style="width: 22rem; border-radius: 10px;">
+      <div class="card-body d-flex flex-column needs-validation">
+        <label for="login" style="text-align: center; font-size: 30px;" class="form-label">REGISTER</label>
+        <div class="mb-3">
+          <label for="name" class="form-label">Username</label>
+          <input type="text" class="form-control" id="registername" placeholder="Name" value="jer" required>
+          <div style="display: none;" class="invalid-feedback name-error-message">Name is required.</div>
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <div  style="display: flex; justify-content: space-between; align-items: center;">
+            <input type="email" class="form-control" id="registeremail" placeholder="Email" required>
+            <button id="buttomvalidasi" type="button" class="btn btn-secondary" style="margin-left: 20px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-key"
+                viewBox="0 0 16 16">
+                <path
+                  d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8m4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5" />
+                <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="text" class="form-label">Validation</label>
+          <input type="text" class="form-control" id="validasiemail" placeholder="Vadidation Email" required>
+          <div style="display: none;" class="invalid-feedback email-error-message">Invalid email address.</div>
+         
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="registerpassword" placeholder="password" value="abcd"
+            required>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">password</label>
+          <input type="password" class="form-control" id="konfirmasipassword" placeholder="password" value="abcd"
+            required>
+          <div style="display: none;" class="invalid-feedback password-error-message">Passwords do not match.</div>
+
+        </div>
+        <button type="button" style="margin: 10px 0 20px 0;" class="btn btn-info"
+          id="registerButton">registration</button>
+        <button style="text-align: center; text-decoration: none;" type="button" class="btn btn-link"
+          id="loginButton">Already have an account?
+          Login</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    $(document).ready(function () {
+
+      ValidationCode()
+
+
+      function ValidationCode(){
+        $("#buttomvalidasi").click(function (){
+          var email = $("#registeremail").val();
+          Validation(email) 
+        });
+      }
+
+
+      function Validation(email) {
+        $.ajax({
+          url: "{{ url_for('postvalidation') }}",
+          type: "POST",
+          dataType: "json",
+          data: {
+            email: email
+
+          },
+          success: function (response) {
+            console.log("Data Update successfully:", response);
+          },
+          error: function (error) {
+            console.log('erorr', error.message)
+          }
+        });
+      }
+
+
+
+
+      $("#loginButton").click(function () {
+        $('#loadingModal').modal('show')
+        setTimeout(function () {
+          $('#loadingModal').modal('hide');
+          window.location.href = "{{ url_for('getlogin') }}";
+        }, 300);
+      });
+
+      function isValidEmail(email) {
+        // Validasi format email menggunakan ekspresi reguler
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+      }
+
+
+      $("#registerButton").click(function () {
+
+        var name = $("#registername").val();
+        var email = $("#registeremail").val();
+        var registerpass = $("#registerpassword").val();
+        var pass = $("#konfirmasipassword").val();
+        var validasicode = $("#validasiemail").val();
+
+        var validasi = true;
+
+
+        if (!isValidEmail(email)) {
+          $("#registeremail").addClass("is-invalid");
+          $(".email-error-message").show();
+          validasi = false;
+        } else {
+          $("#registeremail").removeClass("is-invalid");
+          $("#registeremail").addClass("is-valid");
+        }
+        // if (validasicode.length<1) {
+        //   $("#validasiemail").addClass("is-invalid");
+        //   $(".name-error-message").show();
+        //   validasi = false;
+        // } else {
+        //   $("#validasiemail").removeClass("is-invalid");
+        //   $("#validasiemail").addClass("is-valid");
+        // }
+
+        if (pass.length < 1 || pass !== registerpass) {
+          $("#registerpassword, #konfirmasipassword").addClass("is-invalid");
+          $(".password-error-message").show();
+          validasi = false;
+        } else {
+          $("#registerpassword, #konfirmasipassword").removeClass("is-invalid");
+          $("#registerpassword, #konfirmasipassword").addClass("is-valid");
+        }
+        // Validasi name
+        if (name.length < 1) {
+          $("#registername").addClass("is-invalid");
+          $(".name-error-message").show();
+          validasi = false;
+        } else {
+          $("#registername").removeClass("is-invalid");
+          $("#registername").addClass("is-valid");
+
+        }
+
+        // Validasi email dan password jika isValid true
+        if (validasi) {
+          console.log("masuk aja",validasi)
+          $("#registername, #registeremail, #registerpassword, #konfirmasipassword").addClass("is-valid");
+          $('#loadingModal').modal('show')
+          register(name, email, pass,validasicode);
+        }
+        console.log(validasi)
+      });
+
+      function register(name, email, password, validasicode) {
+        console.log("masuk register ")
+        $.ajax({
+          url: "{{ url_for('getRegister') }}",
+          type: "POST",
+          dataType: "json",
+          data: {
+            name: name,
+            email: email,
+            pass: password,
+            validasicode: validasicode
+
+          },
+          success: function (response) {
+            console.log("Data Update successfully:", response);
+            window.location.href = response.x
+            // window.location.href = "{{ url_for('home') }}";
+          },
+          error: function (error) {
+            console.log('erorr', error.message)
+            $('#loadingModal').modal('hide');
+          }
+        });
+      }
+
+     
+
+
+    })
+  </script>
+</body>
+
+</html>

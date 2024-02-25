@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bukti</title>
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+</head>
+
+<body class="mx-auto">
+    <div style="width: 100%;">
+        <div>
+
+            <button id="buttonBack" class="btn " type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasWithBackdrop" aria-controls="offcanvasWithBackdrop">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="#66aead"
+                    class="bi bi-arrow-left-circle" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
+                </svg>
+            </button>
+            <h1 style="text-align: center; margin:  20px 0 40px 0;color: black;" class="form-label">Loan Notification</h1>
+
+            <div id="users_table_bukti_pinjaman">
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+
+
+
+    <script>
+
+
+        // mengecek jika file atau tampilan htmlnya sudah jadi
+        $(document).ready(function () {
+
+            buttonBackHome()
+            getPinjamanStatusWait()
+
+            function buttonBackHome() {
+                $("#buttonBack").click(function () {
+                    // Redirect to register.html
+                    window.location.href = "{{ url_for('home') }}";
+                });
+
+            }
+            function introduce() {
+                $('.reject-button').on('click', function () {
+                    var userId = $(this).data('user-id');
+                    console.log(userId)
+                    rejectByID(userId)
+                    
+                });
+                $('.acc-button').on('click', function () {
+                    var userId = $(this).data('user-id');
+                    console.log(userId)
+                    acceptByID(userId)
+                    
+                });
+
+            }
+            function rejectByID(userId){
+                $.ajax({
+                url: "{{ url_for('rejectByID') }}",
+                type: 'POST',
+                data: {
+                    userId: userId
+                },
+
+                success: function (response) {
+
+                    console.log('Upload successful:', response);
+
+                  
+                        console.log('Data has been loaded!');
+                        getPinjamanStatusWait();
+                },
+                error: function (error) {
+                    console.error('Error uploading file:', error);
+                }
+            });
+            }
+
+            function acceptByID(userId){
+                $.ajax({
+                url: "{{ url_for('acceptByID') }}",
+                type: 'POST',
+                data: {
+                    userId: userId
+                },
+
+                success: function (response) {
+
+                    console.log('Upload successful:', response);
+
+                  
+                        console.log('Data has been loaded!');
+                        getPinjamanStatusWait();
+                },
+                error: function (error) {
+                    console.error('Error uploading file:', error);
+                }
+            });
+            }
+
+
+
+            function getPinjamanStatusWait() {
+                $.ajax({
+                    url: "{{ url_for('getPinjamanStatusWait') }}",
+                    type: "GET",
+                    dataType: "json",
+
+                    success: function (result) {
+                        var data = result.data
+                        console.log("hallo")
+                        function appendRows() {
+                            var tbody = $('#users_table_bukti_pinjaman');
+                            tbody.empty(); // Clear existing rows
+
+                            // Loop through the data and append rows to the table
+                            for (var i = 0; i < data.length; i++) {
+
+                                var row = `<div class="card">
+                                    <div class="card-header"
+                                        style="display: flex; flex-direction: row; justify-content: space-between;">
+                                        ${data[i][4]}
+                                        </div>
+                                        <div class="card-body"
+                                        style="display: flex; flex-direction: row; justify-content: space-between;">
+                                        <div style="display: flex; flex-direction: column; text-align: left;">
+                                            <p class="card-text">Hallo ${data[i][1]}, ${data[i][2]} ingin melakukan pinjaman dengan anda. 
+                                                Dengan Nominal ${data[i][3]}. Jika setuju click Accept untuk melanjutkan</p>
+                                                
+                                                </div>
+                                                <div style="display: flex; flex-direction: column; justify-content: space-around;">
+                                                    <button id="acc" type="button" data-user-id="${data[i][0]}" class="btn btn-success acc-button"
+                                                   >accept</button>
+                                                    <button id="reject" type="button" data-user-id="${data[i][0]}" class="btn btn-danger reject-button"
+                                                    >reject</button>
+                                                </div>
+
+                                           
+                                        </div>
+        
+                                </div>`;
+                                tbody.append(row);
+                            }
+                        }
+                        appendRows();
+                        introduce();
+
+
+                    }
+                })
+            }
+
+
+        });
+
+
+
+    </script>
+
+</body>
+
+</html>
